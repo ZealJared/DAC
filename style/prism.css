@@ -152,3 +152,35 @@ pre[class*="language-"] {
     color: transparent;
     text-shadow: none;
 }
+
+#DAC_caret {
+    display: inline-block;
+    vertical-align: text-top;
+    height: 0;
+    width: 0;
+    position: relative;
+}
+
+#DAC_caret::after {
+    content: "|";
+    color: #000;
+    display: block;
+    position: absolute;
+    left: -4px;
+    top: -2px;
+}
+
+#DAC_caret::after {
+    animation: blink 1s steps(5, start) infinite;
+    -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
