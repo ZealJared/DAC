@@ -16,8 +16,15 @@ DAC.init = function (barID, editorID, tipsID, codeFile) {
         Prism.highlightElement(DAC.code[0], false, function () {
             DAC.code.append($("<br>"));
             DAC.editorInit();
-            // DAC.carat.init();
         });
+    });
+};
+
+DAC.updateCode = function(code){
+    DAC.code.text(code);
+    Prism.highlightElement(DAC.code[0], false, function () {
+        DAC.code.append($("<br>"));
+        DAC.moveCaret(DAC.editor[0].selectionEnd);
     });
 };
 
@@ -27,7 +34,13 @@ DAC.editorInit = function () {
     DAC.editor.text(DAC.code.text());
     DAC.codeCon.append(DAC.editor);
     var keyTime;
-    DAC.editor.on("focus mouseup keyup", function () {
+    DAC.editor.on("focus mouseup keyup", function (evt) {
+        if(evt.ctrlKey && evt.keyCode === 90){
+            evt.stopPropagation();
+            evt.preventDefault();
+            console.log(DAC.editor.val());
+            return false;
+        }
         window.clearTimeout(keyTime);
         DAC.moveCaret(DAC.editor[0].selectionEnd);
     });
@@ -35,6 +48,9 @@ DAC.editorInit = function () {
         keyTime = window.setTimeout(function () {
             DAC.moveCaret(DAC.editor[0].selectionEnd);
         }, 50);
+    });
+    DAC.editor.on("input", function(){
+        DAC.updateCode(DAC.editor.val());
     });
 };
 
@@ -53,10 +69,10 @@ Range.prototype.includeNextChar = function () {
         }
         this.setEnd(next, 0);
     }
-    console.log(this.toString().length);
 };
 
 DAC.moveCaret = function (pos) {
+    DAC.caret.detach();
     var range = document.createRange();
     range.setStart(DAC.code[0], 0);
     while (range.toString().length < pos) {
@@ -64,4 +80,15 @@ DAC.moveCaret = function (pos) {
     }
     range.collapse();
     range.insertNode(DAC.caret[0]);
+};
+
+DAC.insert = function(text){
+    var val = DAC.editor.val();
+    var startPos = DAC.editor[0].selectionStart;
+    var endPos = DAC.editor[0].selectionEnd;
+    var part1 = val.substr(0, startPos);
+    var part2 = val.substr(endPos);
+    var result = part1 + text + part2;
+    DAC.editor.val(result);
+    DAC.updateCode(result);
 };
