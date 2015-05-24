@@ -7,20 +7,20 @@ DAC.init = function (barID, editorID, tipsID, codeFile) {
     DAC.codeCon = $('<pre id="DAC_code_con"></pre>');
     DAC.code = $('<code id="DAC_code" class="language-arduino" data-manual></code>');
     DAC.codeCon.append(DAC.code);
-    DAC.bar = $("#" + barID);
     DAC.editorCon = $("#" + editorID);
+    DAC.editorCon.append(DAC.codeCon);
+    DAC.bar = $("#" + barID);
     DAC.tips = $("#" + tipsID);
     $.get("./sketch/" + codeFile + ".txt", function (data) {
-        DAC.code.text(data);
-        DAC.editorCon.append(DAC.codeCon);
-        Prism.highlightElement(DAC.code[0], false, function () {
-            DAC.code.append($("<br>"));
-            DAC.editorInit();
-        });
+        DAC.updateCode(data);
     });
 };
 
 DAC.updateCode = function(code){
+    if(!DAC.editor){
+        DAC.editorInit();
+        DAC.editor.val(code);
+    }
     DAC.code.text(code);
     Prism.highlightElement(DAC.code[0], false, function () {
         DAC.code.append($("<br>"));
