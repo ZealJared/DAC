@@ -1,3 +1,8 @@
+/*
+ * store text in textarea using textevent inputs
+ * focus textarea on ctrl key down (this way ctrl+z fires on textarea)
+ */
+
 var DAC = {};
 // container
 // code
